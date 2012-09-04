@@ -78,6 +78,8 @@
         table_ = [table retain];
         
         pullToRefreshView_ = [[MNMBottomPullToRefreshView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, CGRectGetWidth(table_.frame), height)];
+        
+        originalInsets_ = [table contentInset];
     }
     
     return self;
@@ -138,10 +140,27 @@
 #pragma mark -
 #pragma mark Table view scroll management
 
+/**
+ * Check if the pull-to-refresh view has an assigned superview
+ */
+- (BOOL)pullToRefreshViewIsOnScreen {
+    return (Nil != [pullToRefreshView_ superview]);
+}
+
+/**
+ * Remove pull-to-refresh view
+ */
+- (void)removePullToRefreshViewFromTableView {
+    [pullToRefreshView_ removeFromSuperview];
+}
+
 /*
  * Checks state of control depending on tableView scroll offset
  */
 - (void)tableViewScrolled {
+    
+    if (NO == [self pullToRefreshViewIsOnScreen])
+        return;
     
     if (!pullToRefreshView_.hidden && !pullToRefreshView_.isLoading) {
         
@@ -164,6 +183,9 @@
  */
 - (void)tableViewReleased {
     
+    if (NO == [self pullToRefreshViewIsOnScreen])
+        return;
+    
     if (!pullToRefreshView_.hidden && !pullToRefreshView_.isLoading) {
         
         CGFloat offset = [self tableScrollOffset];
@@ -179,11 +201,11 @@
                 
                 if (table_.contentSize.height >= table_.frame.size.height) {
                 
-                    table_.contentInset = UIEdgeInsetsMake(0.0f, 0.0f, -height, 0.0f);
+                    table_.contentInset = UIEdgeInsetsMake(originalInsets_.top, originalInsets_.left, -height - originalInsets_.bottom, originalInsets_.right);
                     
                 } else {
                     
-                    table_.contentInset = UIEdgeInsetsMake(height, 0.0f, 0.0f, 0.0f);
+                    table_.contentInset = UIEdgeInsetsMake(height + originalInsets_.top, originalInsets_.left, originalInsets_.bottom, originalInsets_.right);
                 }
             }];
         }
@@ -195,9 +217,11 @@
  */
 - (void)tableViewReloadFinished {
     
-    table_.contentInset = UIEdgeInsetsZero;
-    
-    [self relocatePullToRefreshView];
+    if ([self pullToRefreshViewIsOnScreen]) {
+        [UIView animateWithDuration:0.2f animations:^{
+            table_.contentInset = originalInsets_;
+        }];
+    }
         
     [pullToRefreshView_ changeStateOfControl:MNMBottomPullToRefreshViewStateIdle withOffset:CGFLOAT_MAX];
 }

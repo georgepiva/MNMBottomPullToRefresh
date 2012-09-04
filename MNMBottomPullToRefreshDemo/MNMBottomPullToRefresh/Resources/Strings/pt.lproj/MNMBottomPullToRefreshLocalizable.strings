@@ -21,6 +21,9 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. 
  */
 
-"MNM_BOTTOM_PTR_PULL_TEXT" = "Pull to get more...";
-"MNM_BOTTOM_PTR_RELEASE_TEXT" = "Release now!";
-"MNM_BOTTOM_PTR_LOADING_TEXT" = "Loading...";
+"Release to refresh..." = "Soltar para atualizar...";
+
+"Pull up to refresh..." = "Arrastar para baixo para atualizar...";
+
+"Loading..." = "Carregando...";
+

@@ -81,6 +81,11 @@
      * Client object that observes changes
      */
     id<MNMBottomPullToRefreshManagerClient> client_;
+    
+    /**
+     * Cached Original TalbeView ContentInset
+     */
+    UIEdgeInsets originalInsets_;
 }
 
 /**
@@ -91,6 +96,16 @@
  * @param client The client that will observe behavior
  */
 - (id)initWithPullToRefreshViewHeight:(CGFloat)height tableView:(UITableView *)table withClient:(id<MNMBottomPullToRefreshManagerClient>)client;
+
+/**
+ * Check if the pull-to-refresh view has an assigned superview
+ */
+- (BOOL)pullToRefreshViewIsOnScreen;
+
+/**
+ * Remove pull-to-refresh view
+ */
+- (void)removePullToRefreshViewFromTableView;
 
 /**
  * Relocate pull-to-refresh view

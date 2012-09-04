@@ -26,19 +26,21 @@
 /**
  * Defines the localized strings table
  */
-#define MNM_BOTTOM_PTR_LOCALIZED_STRINGS_TABLE                          @"MNMBottomPullToRefresh"
+#define MNM_BOTTOM_PTR_LOCALIZED_STRINGS_TABLE                          @"MNMBottomPullToRefreshLocalizable"
 
 /**
  * Texts to show in different states
  */
-#define MNM_BOTTOM_PTR_PULL_TEXT_KEY                                    @"MNM_BOTTOM_PTR_PULL_TEXT"
-#define MNM_BOTTOM_PTR_RELEASE_TEXT_KEY                                 @"MNM_BOTTOM_PTR_RELEASE_TEXT"
-#define MNM_BOTTOM_PTR_LOADING_TEXT_KEY                                 @"MNM_BOTTOM_PTR_LOADING_TEXT"
+#define MNM_BOTTOM_PTR_PULL_TEXT_KEY                                    @"Pull up to refresh..."
+#define MNM_BOTTOM_PTR_RELEASE_TEXT_KEY                                 @"Release to refresh..."
+#define MNM_BOTTOM_PTR_LOADING_TEXT_KEY                                 @"Loading..."
 
 /**
  * Defines arrow image
  */
-#define MNM_BOTTOM_PTR_ARROW_BOTTOM_IMAGE                               @"MNMBottomPullToRefreshArrow.png"
+#define MNM_BOTTOM_PTR_ARROW_BOTTOM_IMAGE                               @"blueArrow.png"
+
+#define TEXT_COLOR	 [UIColor colorWithRed:87.0/255.0 green:108.0/255.0 blue:137.0/255.0 alpha:1.0]
 
 @implementation MNMBottomPullToRefreshView
 
@@ -76,7 +78,7 @@
     
     if (self = [super initWithFrame:frame]) {
         
-        self.backgroundColor = [UIColor colorWithWhite:0.75f alpha:1.0f];        
+        self.backgroundColor = [UIColor clearColor];
         
         UIImage *arrowImage = [UIImage imageNamed:MNM_BOTTOM_PTR_ARROW_BOTTOM_IMAGE];
         
@@ -86,7 +88,7 @@
         
         [self addSubview:arrowImageView_];
         
-        loadingActivityIndicator_ = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+        loadingActivityIndicator_ = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
         loadingActivityIndicator_.center = arrowImageView_.center;
         loadingActivityIndicator_.hidesWhenStopped = YES;
         
@@ -94,8 +96,11 @@
         
         messageLabel_ = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(arrowImageView_.frame) + 20.0f, 10.0f, CGRectGetWidth(frame) - CGRectGetMaxX(arrowImageView_.frame) - 40.0f, CGRectGetHeight(frame) - 20.0f)];
         messageLabel_.backgroundColor = [UIColor clearColor];
-        messageLabel_.textColor = [UIColor whiteColor];
-        
+        messageLabel_.textColor = TEXT_COLOR;
+        messageLabel_.font = [UIFont boldSystemFontOfSize:13.0f];
+        messageLabel_.shadowColor = [UIColor colorWithWhite:0.9f alpha:1.0f];
+		messageLabel_.shadowOffset = CGSizeMake(0.0f, 1.0f);
+
         [self addSubview:messageLabel_];
         
         rotateArrowWhileBecomingVisible_ = YES;
@@ -133,7 +138,7 @@
             
             if (rotateArrowWhileBecomingVisible_) {
             
-                CGFloat angle = (-offset * M_PI) / CGRectGetHeight(self.frame);
+                CGFloat angle = (offset * M_PI) / CGRectGetHeight(self.frame);
                 
                 arrowImageView_.transform = CGAffineTransformRotate(CGAffineTransformIdentity, angle);
                 
