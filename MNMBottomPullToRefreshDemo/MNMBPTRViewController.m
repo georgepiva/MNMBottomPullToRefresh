@@ -90,6 +90,7 @@
     
     [table_ reloadData];
     
+    [pullToRefreshManager_ relocatePullToRefreshView];
     [pullToRefreshManager_ tableViewReloadFinished];
 }
 
