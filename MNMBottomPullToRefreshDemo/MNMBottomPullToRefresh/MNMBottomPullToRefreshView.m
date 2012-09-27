@@ -31,9 +31,10 @@
 /**
  * Texts to show in different states
  */
-#define MNM_BOTTOM_PTR_PULL_TEXT_KEY                                    @"Pull up to refresh..."
+#define MNM_BOTTOM_PTR_PULL_REFRESH_TEXT_KEY                            @"Pull up to refresh..."
+#define MNM_BOTTOM_PTR_PULL_LOAD_MORE_TEXT_KEY                          @"Pull up to load more..."
 #define MNM_BOTTOM_PTR_RELEASE_TEXT_KEY                                 @"Release to refresh..."
-#define MNM_BOTTOM_PTR_LOADING_TEXT_KEY                                 @"Loading..."
+#define MNM_BOTTOM_PTR_LOADING_TEXT_KEY                                 @"Updating..."
 
 /**
  * Defines arrow image
@@ -45,6 +46,50 @@
 @implementation MNMBottomPullToRefreshView
 
 @dynamic isLoading;
+
+#pragma mark -
+#pragma mark LocalizedStrings
+
+- (NSString *)localizedStringWithStateOfControl:(MNMBottomPullToRefreshViewState)state {
+
+    switch (state) {
+            
+        case MNMBottomPullToRefreshViewStateIdle: {
+            
+            if (MNMBottomPullToRefreshViewOptionPullToRefresh == option_) {
+                
+                return NSLocalizedStringFromTable(MNM_BOTTOM_PTR_PULL_REFRESH_TEXT_KEY, MNM_BOTTOM_PTR_LOCALIZED_STRINGS_TABLE, nil);
+                
+            } else if (MNMBottomPullToRefreshViewOptionPullToLoadMore == option_) {
+                
+                return NSLocalizedStringFromTable(MNM_BOTTOM_PTR_PULL_LOAD_MORE_TEXT_KEY, MNM_BOTTOM_PTR_LOCALIZED_STRINGS_TABLE, nil);
+                
+            }
+            
+        } case MNMBottomPullToRefreshViewStatePull: {
+            
+            if (MNMBottomPullToRefreshViewOptionPullToRefresh == option_) {
+                
+                return NSLocalizedStringFromTable(MNM_BOTTOM_PTR_PULL_REFRESH_TEXT_KEY, MNM_BOTTOM_PTR_LOCALIZED_STRINGS_TABLE, nil);
+                
+            } else if (MNMBottomPullToRefreshViewOptionPullToLoadMore == option_) {
+                
+                return NSLocalizedStringFromTable(MNM_BOTTOM_PTR_PULL_LOAD_MORE_TEXT_KEY, MNM_BOTTOM_PTR_LOCALIZED_STRINGS_TABLE, nil);
+                
+            }
+            
+        } case MNMBottomPullToRefreshViewStateRelease: {
+            return NSLocalizedStringFromTable(MNM_BOTTOM_PTR_RELEASE_TEXT_KEY, MNM_BOTTOM_PTR_LOCALIZED_STRINGS_TABLE, nil);
+            
+        } case MNMBottomPullToRefreshViewStateLoading: {
+            return NSLocalizedStringFromTable(MNM_BOTTOM_PTR_LOADING_TEXT_KEY, MNM_BOTTOM_PTR_LOCALIZED_STRINGS_TABLE, nil);
+            
+        } default:
+            break;
+    }
+    
+    return Nil;
+}
 
 #pragma mark -
 #pragma mark Memory management
@@ -68,13 +113,20 @@
 #pragma mark -
 #pragma mark Initialization
 
+- (id)initWithFrame:(CGRect)frame {
+    return [self initWithFrame:frame andOption:MNMBottomPullToRefreshViewOptionPullToRefresh];
+}
+
 /**
  * Initializes and returns a newly allocated view object with the specified frame rectangle.
  *
  * @param aRect: The frame rectangle for the view, measured in points.
  * @return An initialized view object or nil if the object couldn't be created.
  */
-- (id)initWithFrame:(CGRect)frame {
+- (id)initWithFrame:(CGRect)frame andOption:(MNMBottomPullToRefreshViewOptions)option {
+    
+    NSAssert1(option >= MNMBottomPullToRefreshViewOptionNone   ||
+              option <= MNMBottomPullToRefreshViewOptionCount, @"MNMBottomPullToRefreshView did received an invalid option value '%d'.", option);
     
     if (self = [super initWithFrame:frame]) {
         
@@ -105,6 +157,8 @@
         
         rotateArrowWhileBecomingVisible_ = YES;
         
+        option_ = option;
+        
         [self changeStateOfControl:MNMBottomPullToRefreshViewStateIdle withOffset:CGFLOAT_MAX];
     }
     
@@ -130,8 +184,6 @@
             
             [loadingActivityIndicator_ stopAnimating];
             
-            messageLabel_.text = NSLocalizedStringFromTable(MNM_BOTTOM_PTR_PULL_TEXT_KEY, MNM_BOTTOM_PTR_LOCALIZED_STRINGS_TABLE, nil);
-            
             break;
             
         } case MNMBottomPullToRefreshViewStatePull: {
@@ -147,15 +199,11 @@
                 arrowImageView_.transform = CGAffineTransformIdentity;
             }
             
-            messageLabel_.text = NSLocalizedStringFromTable(MNM_BOTTOM_PTR_PULL_TEXT_KEY, MNM_BOTTOM_PTR_LOCALIZED_STRINGS_TABLE, nil);
-            
             break;
             
         } case MNMBottomPullToRefreshViewStateRelease: {
             
             arrowImageView_.transform = CGAffineTransformMakeRotation(M_PI);
-            
-            messageLabel_.text = NSLocalizedStringFromTable(MNM_BOTTOM_PTR_RELEASE_TEXT_KEY, MNM_BOTTOM_PTR_LOCALIZED_STRINGS_TABLE, nil);
             
             break;
             
@@ -165,13 +213,13 @@
             
             [loadingActivityIndicator_ startAnimating];
             
-            messageLabel_.text = NSLocalizedStringFromTable(MNM_BOTTOM_PTR_LOADING_TEXT_KEY, MNM_BOTTOM_PTR_LOCALIZED_STRINGS_TABLE, nil);
-            
             break;
             
         } default:
             break;
     }
+    
+    messageLabel_.text = [self localizedStringWithStateOfControl:state_];
 }
 
 #pragma mark -

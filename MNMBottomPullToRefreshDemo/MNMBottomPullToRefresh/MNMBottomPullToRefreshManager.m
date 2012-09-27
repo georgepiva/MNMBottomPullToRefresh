@@ -24,6 +24,11 @@
 #import "MNMBottomPullToRefreshManager.h"
 #import "MNMBottomPullToRefreshView.h"
 
+/**
+ * Constants
+ */
+#define MNMBottomPullToRefreshManagerTableContentSizeKey    @"contentSize"
+
 @interface MNMBottomPullToRefreshManager()
 
 /**
@@ -33,6 +38,12 @@
  * @private
  */
 - (CGFloat)tableScrollOffset;
+
+/**
+ * KVO methods
+ */
+- (void)registerAsObserver;
+- (void)unregisterAsObserver;
 
 @end
 
@@ -45,6 +56,8 @@
  * Deallocates not used memory
  */
 - (void)dealloc {
+    [self unregisterAsObserver];
+    
     [pullToRefreshView_ release];
     pullToRefreshView_ = nil;
     
@@ -70,19 +83,68 @@
  * Initializes the manager object with the information to link view and table
  */
 - (id)initWithPullToRefreshViewHeight:(CGFloat)height tableView:(UITableView *)table withClient:(id<MNMBottomPullToRefreshManagerClient>)client {
+    return [self initWithPullToRefreshViewHeight:height tableView:table withClient:client andOption:MNMBottomPullToRefreshViewOptionPullToRefresh];
+}
 
+/*
+ * Initializes the manager object with the information to link view and table
+ */
+- (id)initWithPullToRefreshViewHeight:(CGFloat)height tableView:(UITableView *)table withClient:(id<MNMBottomPullToRefreshManagerClient>)client andOption:(MNMBottomPullToRefreshViewOptions)option {
+    
     if (self = [super init]) {
         
         client_ = client;
         
         table_ = [table retain];
         
-        pullToRefreshView_ = [[MNMBottomPullToRefreshView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, CGRectGetWidth(table_.frame), height)];
+        pullToRefreshView_ = [[MNMBottomPullToRefreshView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, CGRectGetWidth(table_.frame), height) andOption:option];
         
         originalInsets_ = [table contentInset];
+        
+        UIView *tableFooterView = [[UIView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 0.0f, 0.0f)];
+        
+        [table_ setTableFooterView:tableFooterView];
+        
+        [tableFooterView release];
+        
+        [self registerAsObserver];
     }
     
     return self;
+}
+
+#pragma mark -
+#pragma mark KVO
+
+/**
+ * Register 'self' to receive change notifications for the "contentSize" property of
+ * the 'tableView' object and specify the new value of "contentSize"
+ * should be provided in the observe… method.
+ */
+- (void)registerAsObserver {
+    [table_ addObserver:self
+                     forKeyPath:MNMBottomPullToRefreshManagerTableContentSizeKey
+                        options:NSKeyValueObservingOptionNew
+                        context:NULL];
+}
+
+- (void)unregisterAsObserver {
+    [table_ removeObserver:self forKeyPath:MNMBottomPullToRefreshManagerTableContentSizeKey];
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath
+                      ofObject:(id)object
+                        change:(NSDictionary *)change
+                       context:(void *)context {
+    
+    if ([keyPath isEqual:MNMBottomPullToRefreshManagerTableContentSizeKey]) {
+        
+        if ([self pullToRefreshViewIsOnScreen]) {
+            
+            [self relocatePullToRefreshView];
+            
+        }
+    }
 }
 
 #pragma mark -

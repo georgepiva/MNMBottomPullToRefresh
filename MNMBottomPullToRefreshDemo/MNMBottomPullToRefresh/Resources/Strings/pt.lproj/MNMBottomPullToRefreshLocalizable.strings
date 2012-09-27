@@ -21,9 +21,11 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. 
  */
 
-"Release to refresh..." = "Soltar para atualizar...";
+"Release to refresh..." = "Solte para atualizar...";
 
-"Pull up to refresh..." = "Arrastar para baixo para atualizar...";
+"Pull up to refresh..." = "Arraste para baixo para atualizar...";
 
-"Loading..." = "Carregando...";
+"Pull up to load more..." = "Arraste para baixo para carregar...";
+
+"Updating..." = "Atualizando...";
 

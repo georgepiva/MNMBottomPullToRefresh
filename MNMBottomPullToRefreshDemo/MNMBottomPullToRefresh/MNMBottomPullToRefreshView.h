@@ -34,6 +34,16 @@ typedef enum {
 } MNMBottomPullToRefreshViewState;
 
 /**
+ * Enumerates behavior options
+ */
+typedef enum {
+    MNMBottomPullToRefreshViewOptionNone = -1,
+    MNMBottomPullToRefreshViewOptionPullToRefresh,     // Default option.
+    MNMBottomPullToRefreshViewOptionPullToLoadMore,
+    MNMBottomPullToRefreshViewOptionCount,
+} MNMBottomPullToRefreshViewOptions;
+
+/**
  * Pull to refresh view. Its state is managed by an instance of MNMBottomPullToRefreshManager
  */
 @interface MNMBottomPullToRefreshView : UIView {
@@ -59,6 +69,11 @@ typedef enum {
     MNMBottomPullToRefreshViewState state_;
     
     /**
+     * Current option
+     */
+    MNMBottomPullToRefreshViewOptions option_;
+    
+    /**
      * YES to apply rotation to the arrow while view is in MNMBottomPullToRefreshViewStatePull state
      */
     BOOL rotateArrowWhileBecomingVisible_;
@@ -78,5 +93,14 @@ typedef enum {
  * @param offset The offset of the table scroll
  */
 - (void)changeStateOfControl:(MNMBottomPullToRefreshViewState)state withOffset:(CGFloat)offset;
+
+/**
+ * Initializes and returns a newly allocated view object with the specified frame rectangle.
+ *
+ * @param aRect: The frame rectangle for the view, measured in points.
+ * @param option: Describe the component main action.
+ * @return An initialized view object or nil if the object couldn't be created.
+ */
+- (id)initWithFrame:(CGRect)frame andOption:(MNMBottomPullToRefreshViewOptions)option;
 
 @end

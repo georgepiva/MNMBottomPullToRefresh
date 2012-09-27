@@ -21,13 +21,13 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. 
  */
 
-@class MNMBottomPullToRefreshView;
 @class MNMBottomPullToRefreshManager;
 
 #import <Foundation/Foundation.h>
+#import "MNMBottomPullToRefreshView.h"
 
 /**
- * Delegate protocol to implement by MNMBottomPullToRefreshManager observers
+ * Delegate protocol to implement by MNMBottomPullToRefreshManager observers.
  */
 @protocol MNMBottomPullToRefreshManagerClient
 
@@ -96,6 +96,16 @@
  * @param client The client that will observe behavior
  */
 - (id)initWithPullToRefreshViewHeight:(CGFloat)height tableView:(UITableView *)table withClient:(id<MNMBottomPullToRefreshManagerClient>)client;
+
+/**
+ * Initializes the manager object with the information to link view and table
+ *
+ * @param height The height that the pull-to-refresh view will have
+ * @param table Table view to link pull-to-refresh view to
+ * @param client The client that will observe behavior
+ * @param option Describe the component main action.
+ */
+- (id)initWithPullToRefreshViewHeight:(CGFloat)height tableView:(UITableView *)table withClient:(id<MNMBottomPullToRefreshManagerClient>)client andOption:(MNMBottomPullToRefreshViewOptions)option;
 
 /**
  * Check if the pull-to-refresh view has an assigned superview
