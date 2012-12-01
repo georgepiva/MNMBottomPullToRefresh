@@ -29,6 +29,12 @@
  */
 #define MNMBottomPullToRefreshManagerTableContentSizeKey    @"contentSize"
 
+/**
+ * Defines arrow image
+ */
+#define MNM_BOTTOM_PTR_ARROW_BOTTOM_IMAGE                               @"blueArrow.png"
+#define TEXT_COLOR	 [UIColor colorWithRed:87.0/255.0 green:108.0/255.0 blue:137.0/255.0 alpha:1.0]
+
 @interface MNMBottomPullToRefreshManager()
 
 /**
@@ -90,6 +96,16 @@
  * Initializes the manager object with the information to link view and table
  */
 - (id)initWithPullToRefreshViewHeight:(CGFloat)height tableView:(UITableView *)table withClient:(id<MNMBottomPullToRefreshManagerClient>)client andOption:(MNMBottomPullToRefreshViewOptions)option {
+    return [self initWithPullToRefreshViewHeight:height tableView:table arrowImageName:MNM_BOTTOM_PTR_ARROW_BOTTOM_IMAGE textColor:TEXT_COLOR backgroundColor:[UIColor clearColor] client:client andOption:option];
+}
+
+- (id)initWithPullToRefreshViewHeight:(CGFloat)height
+                            tableView:(UITableView *)table
+                       arrowImageName:(NSString *)arrowImageName
+                            textColor:(UIColor *)textColor
+                      backgroundColor:(UIColor *)backgroundColor
+                               client:(id<MNMBottomPullToRefreshManagerClient>)client
+                            andOption:(MNMBottomPullToRefreshViewOptions)option {
     
     if (self = [super init]) {
         
@@ -97,7 +113,11 @@
         
         table_ = [table retain];
         
-        pullToRefreshView_ = [[MNMBottomPullToRefreshView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, CGRectGetWidth(table_.frame), height) andOption:option];
+        pullToRefreshView_ = [[MNMBottomPullToRefreshView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, CGRectGetWidth(table_.frame), height)
+                                                                arrowImageName:arrowImageName
+                                                                     textColor:textColor
+                                                               backgroundColor:backgroundColor
+                                                                     andOption:option];
         
         originalInsets_ = [table contentInset];
         

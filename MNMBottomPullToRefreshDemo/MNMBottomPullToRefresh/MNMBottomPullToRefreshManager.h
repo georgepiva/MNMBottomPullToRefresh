@@ -107,6 +107,14 @@
  */
 - (id)initWithPullToRefreshViewHeight:(CGFloat)height tableView:(UITableView *)table withClient:(id<MNMBottomPullToRefreshManagerClient>)client andOption:(MNMBottomPullToRefreshViewOptions)option;
 
+- (id)initWithPullToRefreshViewHeight:(CGFloat)height
+                            tableView:(UITableView *)table
+                       arrowImageName:(NSString *)arrowImageName
+                            textColor:(UIColor *)textColor
+                      backgroundColor:(UIColor *)backgroundColor
+                               client:(id<MNMBottomPullToRefreshManagerClient>)client
+                            andOption:(MNMBottomPullToRefreshViewOptions)option;
+
 /**
  * Check if the pull-to-refresh view has an assigned superview
  */

@@ -36,13 +36,6 @@
 #define MNM_BOTTOM_PTR_RELEASE_TEXT_KEY                                 @"Release to refresh..."
 #define MNM_BOTTOM_PTR_LOADING_TEXT_KEY                                 @"Updating..."
 
-/**
- * Defines arrow image
- */
-#define MNM_BOTTOM_PTR_ARROW_BOTTOM_IMAGE                               @"blueArrow.png"
-
-#define TEXT_COLOR	 [UIColor colorWithRed:87.0/255.0 green:108.0/255.0 blue:137.0/255.0 alpha:1.0]
-
 @implementation MNMBottomPullToRefreshView
 
 @dynamic isLoading;
@@ -82,7 +75,7 @@
             return NSLocalizedStringFromTable(MNM_BOTTOM_PTR_RELEASE_TEXT_KEY, MNM_BOTTOM_PTR_LOCALIZED_STRINGS_TABLE, nil);
             
         } case MNMBottomPullToRefreshViewStateLoading: {
-            return NSLocalizedStringFromTable(MNM_BOTTOM_PTR_LOADING_TEXT_KEY, MNM_BOTTOM_PTR_LOCALIZED_STRINGS_TABLE, nil);
+            return @"";//return NSLocalizedStringFromTable(MNM_BOTTOM_PTR_LOADING_TEXT_KEY, MNM_BOTTOM_PTR_LOCALIZED_STRINGS_TABLE, nil);
             
         } default:
             break;
@@ -113,9 +106,9 @@
 #pragma mark -
 #pragma mark Initialization
 
-- (id)initWithFrame:(CGRect)frame {
-    return [self initWithFrame:frame andOption:MNMBottomPullToRefreshViewOptionPullToRefresh];
-}
+//- (id)initWithFrame:(CGRect)frame {
+//    return [self initWithFrame:frame andOption:MNMBottomPullToRefreshViewOptionPullToRefresh];
+//}
 
 /**
  * Initializes and returns a newly allocated view object with the specified frame rectangle.
@@ -123,16 +116,20 @@
  * @param aRect: The frame rectangle for the view, measured in points.
  * @return An initialized view object or nil if the object couldn't be created.
  */
-- (id)initWithFrame:(CGRect)frame andOption:(MNMBottomPullToRefreshViewOptions)option {
+- (id)initWithFrame:(CGRect)frame
+     arrowImageName:(NSString *)arrowImageName
+          textColor:(UIColor *)textColor
+    backgroundColor:(UIColor *)backgroundColor
+          andOption:(MNMBottomPullToRefreshViewOptions)option {
     
     NSAssert1(option >= MNMBottomPullToRefreshViewOptionNone   ||
               option <= MNMBottomPullToRefreshViewOptionCount, @"MNMBottomPullToRefreshView did received an invalid option value '%d'.", option);
     
     if (self = [super initWithFrame:frame]) {
         
-        self.backgroundColor = [UIColor clearColor];
+        self.backgroundColor = backgroundColor;
         
-        UIImage *arrowImage = [UIImage imageNamed:MNM_BOTTOM_PTR_ARROW_BOTTOM_IMAGE];
+        UIImage *arrowImage = [UIImage imageNamed:arrowImageName];
         
         arrowImageView_ = [[UIImageView alloc] initWithFrame:CGRectMake(30.0f, round(CGRectGetHeight(frame) / 2.0f) - round(arrowImage.size.height / 2.0f), arrowImage.size.width, arrowImage.size.height)];
         arrowImageView_.contentMode = UIViewContentModeCenter;
@@ -148,7 +145,7 @@
         
         messageLabel_ = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(arrowImageView_.frame) + 20.0f, 10.0f, CGRectGetWidth(frame) - CGRectGetMaxX(arrowImageView_.frame) - 40.0f, CGRectGetHeight(frame) - 20.0f)];
         messageLabel_.backgroundColor = [UIColor clearColor];
-        messageLabel_.textColor = TEXT_COLOR;
+        messageLabel_.textColor = textColor;
         messageLabel_.font = [UIFont boldSystemFontOfSize:13.0f];
         messageLabel_.shadowColor = [UIColor colorWithWhite:0.9f alpha:1.0f];
 		messageLabel_.shadowOffset = CGSizeMake(0.0f, 1.0f);
@@ -212,6 +209,8 @@
             arrowImageView_.hidden = YES;
             
             [loadingActivityIndicator_ startAnimating];
+            
+            loadingActivityIndicator_.center = CGPointMake(self.centerX, loadingActivityIndicator_.centerY);
             
             break;
             

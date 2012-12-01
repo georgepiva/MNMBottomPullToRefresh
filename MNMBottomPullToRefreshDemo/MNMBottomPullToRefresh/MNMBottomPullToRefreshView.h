@@ -101,6 +101,10 @@ typedef enum {
  * @param option: Describe the component main action.
  * @return An initialized view object or nil if the object couldn't be created.
  */
-- (id)initWithFrame:(CGRect)frame andOption:(MNMBottomPullToRefreshViewOptions)option;
+- (id)initWithFrame:(CGRect)frame
+     arrowImageName:(NSString *)arrowImageName
+          textColor:(UIColor *)textColor
+    backgroundColor:(UIColor *)backgroundColor
+          andOption:(MNMBottomPullToRefreshViewOptions)option;
 
 @end
